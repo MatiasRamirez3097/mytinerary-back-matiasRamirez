@@ -1,32 +1,32 @@
-import City from "../Models/City.js"
+import Hashtag from "../Models/Hashtag.js"
 
-const citiesController = {
+const hashtagController = {
 
-    createOneCity: async (req, res, next) => {
-        let city;
+    createOne: async (req, res, next) => {
+        let el;
         let success = true;
         let error = null;
 
         try {
-            city = await City.create(req.body)
+            el = await Hashtag.create(req.body)
         }
         catch (err) {
             success = false;
             error = err;
         }
         res.json({
-            response: city,
+            response: el,
             success,
             error
         })
     },
-    deleteOneCity: async (req, res, next) => {
+    deleteOne: async (req, res, next) => {
         const id = req.params.id
         let success = true;
         let error = null;
 
         try {
-            await City.findOneAndDelete({ _id: id })
+            await Hashtag.findOneAndDelete({ _id: id })
         }
         catch (err) {
             success = false
@@ -38,38 +38,33 @@ const citiesController = {
             error
         })
     },
-    getOneCity: async (req, res, next) => {
+    getOne: async (req, res, next) => {
         const id = req.params.id
         let success = true;
-        let city;
+        let el;
         let error = null;
 
         try {
-            city = await City.findById(id)
-                .populate({
-                    path: 'itineraries',
-                    populate: ['hashtags', 'user']
-                })
-                .exec();
+            el = await Hashtag.findById(id).exec();
         }
         catch (err) {
             success = false
             error = err
         }
         res.json({
-            response: city,
+            response: el,
             success,
             error
         })
     },
-    getAllCities: async (req, res, next) => {
+    getAll: async (req, res, next) => {
         const search = req.params.search ? { name: { $regex: "^" + req.params.search + ".*", $options: "i" } } : {}
         let success = true;
-        let cities;
+        let els;
         let error = null;
 
         try {
-            cities = await City.find(
+            els = await Hashtag.find(
                 search
             );
         }
@@ -78,39 +73,32 @@ const citiesController = {
             error = err
         }
         res.json({
-            response: cities,
+            response: els,
             success,
             error
         })
 
     },
-    updateOneCity: async (req, res, next) => {
+    updateOne: async (req, res, next) => {
         const id = req.params.id
-        let city;
+        let el;
         let success = true;
         let error = null;
 
         try {
-            city = await City.findOneAndUpdate({ _id: id }, req.body)
+            el = await Hashtag.findOneAndUpdate({ _id: id }, req.body)
         }
         catch (err) {
             success = false
             error = err
         }
         res.json({
-            response: city,
+            response: el,
             success,
             error
         })
-    },
-    addItinerary: async (id, itinerary) => {
-        const el = await City.findByIdAndUpdate(id, {
-            "$push": {
-                "itineraries": itinerary
-            }
-        })
-        return el
     }
+
 }
 
-export default citiesController;
+export default hashtagController;

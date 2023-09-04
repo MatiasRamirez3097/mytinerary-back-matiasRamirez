@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose"
+import { model, Schema, Types } from "mongoose"
 
 const citySchema = Schema({
     name: {
@@ -20,11 +20,17 @@ const citySchema = Schema({
     shortDescription: {
         type: String,
         required: true
-    }
+    },
+    itineraries: [
+        {
+            type: Types.ObjectId,
+            ref: 'itineraries'
+        }
+    ]
 }, {
     timestamps: true
 })
 
-const City = model('Cities', citySchema)
+const City = model('cities', citySchema)
 
 export default City;
