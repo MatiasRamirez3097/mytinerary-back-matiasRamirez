@@ -63,7 +63,7 @@ const citiesController = {
         })
     },
     getAllCities: async (req, res, next) => {
-        const search = req.params.search ? { name: { $regex: "^" + req.params.search + ".*", $options: "i" } } : {}
+        const search = req.params.search ? { name: { $regex: "^" + req.params.search.trim() + ".*", $options: "i" } } : {}
         let success = true;
         let cities;
         let error = null;
