@@ -45,7 +45,12 @@ const citiesController = {
         let error = null;
 
         try {
-            city = await City.findById(id).exec();
+            city = await City.findById(id)
+                .populate({
+                    path: 'itineraries',
+                    populate: ['hashtags', 'user']
+                })
+                .exec();
         }
         catch (err) {
             success = false
@@ -97,8 +102,28 @@ const citiesController = {
             success,
             error
         })
+    },
+    addItinerary: async (id, itinerary) => {
+        const el = await City.findByIdAndUpdate(id, {
+            "$push": {
+                "itineraries": itinerary
+            }
+        })
+        return el
+    },
+    removeItineraryFromAllCities: async (itinerary) => {
+        const el = await City.updateMany(
+            {
+                "itineraries": itinerary
+            },
+            {
+                "$pull": {
+                    "itineraries": itinerary
+                }
+            }
+        )
+        return el
     }
-
 }
 
 export default citiesController;
