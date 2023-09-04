@@ -110,6 +110,19 @@ const citiesController = {
             }
         })
         return el
+    },
+    removeItineraryFromAllCities: async (itinerary) => {
+        const el = await City.updateMany(
+            {
+                "itineraries": itinerary
+            },
+            {
+                "$pull": {
+                    "itineraries": itinerary
+                }
+            }
+        )
+        return el
     }
 }
 

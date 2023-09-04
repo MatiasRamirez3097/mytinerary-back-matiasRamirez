@@ -5,10 +5,8 @@ const { createOne, deleteOne, getAll, getOne, updateOne } = usersController
 const usersRouter = Router();
 
 usersRouter.get(['/', '/:search'], getAll)
-
 usersRouter.post('/create', createOne)
-//citiesRouter.get('/getcity/:id', getOneCity)
-//citiesRouter.put('/update/:id', updateOneCity)
-//citiesRouter.delete('/delete/:id', deleteOneCity)
+usersRouter.get('/getone/:id', getOne)
+usersRouter.put('/update/:id', updateOne)
 
 export default usersRouter;

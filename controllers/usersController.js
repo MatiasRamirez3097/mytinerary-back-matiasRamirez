@@ -20,24 +20,6 @@ const usersController = {
             error
         })
     },
-    deleteOne: async (req, res, next) => {
-        const id = req.params.id
-        let success = true;
-        let error = null;
-
-        try {
-            await User.findOneAndDelete({ _id: id })
-        }
-        catch (err) {
-            success = false
-            error = err
-        }
-        res.json({
-            response: "deleted",
-            success,
-            error
-        })
-    },
     getOne: async (req, res, next) => {
         const id = req.params.id
         let success = true;

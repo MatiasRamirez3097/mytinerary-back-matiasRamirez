@@ -2,6 +2,17 @@ import Itinerary from "../Models/Itinerary.js"
 import citiesController from "./citiesController.js";
 
 const itinerariesController = {
+    addHashtags: async (id, hashtags) => {
+        const res = await Itinerary.findByIdAndUpdate(id,
+            {
+                $addToSet: {
+                    hashtags: {
+                        $each: hashtags
+                    }
+                }
+            })
+        return res
+    },
 
     createOne: async (req, res, next) => {
 
@@ -44,6 +55,7 @@ const itinerariesController = {
 
         try {
             await Itinerary.findOneAndDelete({ _id: id })
+            await citiesController.removeItineraryFromAllCities(id)
         }
         catch (err) {
             success = false
@@ -93,6 +105,17 @@ const itinerariesController = {
         })
 
     },
+
+    removeHashtags: async (id, hashtags) => {
+        const res = await Itinerary.findByIdAndUpdate(id,
+            {
+                $pullAll: {
+                    hashtags: hashtags
+                }
+            })
+        return res
+    },
+
     updateOne: async (req, res, next) => {
         const id = req.params.id
         let el;
@@ -101,6 +124,12 @@ const itinerariesController = {
 
         try {
             el = await Itinerary.findOneAndUpdate({ _id: id }, req.body)
+            if (req.body.addHashtags) await itinerariesController.addHashtags(id, req.body.addHashtags)
+            if (req.body.removeHashtags) await itinerariesController.removeHashtags(id, req.body.removeHashtags)
+            if (req.body.city) {
+                await citiesController.removeItineraryFromAllCities(id)
+                await citiesController.addItinerary(req.body.city, id)
+            }
         }
         catch (err) {
             success = false

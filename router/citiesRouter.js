@@ -5,7 +5,6 @@ const { createOneCity, deleteOneCity, getAllCities, getOneCity, updateOneCity } 
 const citiesRouter = Router();
 
 citiesRouter.get(['/', '/:search'], getAllCities)
-
 citiesRouter.post('/create', createOneCity)
 citiesRouter.get('/getcity/:id', getOneCity)
 citiesRouter.put('/update/:id', updateOneCity)
