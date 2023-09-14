@@ -35,30 +35,30 @@ const authController = {
     signUp: async (req, res, next) => {
 
         let user;
-        let success = true;
-        let error = null;
         let token;
 
         try {
-
             const hashPassword = bcrypt.hashSync(req.body.password)
             req.body.password = hashPassword
             user = await User.create(req.body)
+            console.log(user)
             const { email, photo } = user
             token = jwt.sign({ email, photo }, process.env.SECRET_KEY)
+            return res.status(200).json({
+                success: true,
+                token: token,
+                user: { email, name, photo },
+                message: 'Sign in succesfully'
+            })
         }
         catch (err) {
-            success = false;
-            error = err;
+            return res.status(400).json({
+                response: err.name,
+                success: false,
+                error: err.message,
+                code: 'USER_EXISTS'
+            })
         }
-        res.json({
-            response: {
-                user,
-                token: token
-            },
-            success,
-            error
-        })
     },
     loginWithToken: (req, res) => {
         const { email, name, photo } = req.user
