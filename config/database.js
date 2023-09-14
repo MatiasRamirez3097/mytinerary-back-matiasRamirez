@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
+import 'dotenv/config.js'
 
-mongoose.connect("mongodb+srv://mramire7:4arE91DyADKQ5a3a@cluster0.6xb4zkp.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(process.env.database_url)
     .then(() => {
         console.log("Database connected")
     })
