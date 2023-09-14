@@ -20,6 +20,5 @@ export const signUpSchema = joi.object({
     phone: joi.number(),
     photo: joi.string().uri().optional().allow(''),
     surname: joi.string().required().min(3).max(15),
-    google: joi.boolean().required(),
     verified: joi.boolean()
 })

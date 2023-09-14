@@ -5,18 +5,11 @@ import 'dotenv/config.js'
 
 const authController = {
     signIn: async (req, res, next) => {
-        const { email: emailBody, password } = req.body
-        console.log(req.body)
         try {
+            const { email: emailBody, password } = req.body
             const user = await User.findOne({ email: emailBody })
-            console.log(user)
-            if (!user) {
-                if (req.body.googleLogin) return res.status(200).json({
-                    success: true,
-                    code: 'NO_USER_EXISTS'
-                })
-                else throw new Error('No user exists with this email')
-            }
+            if (!user) throw new Error('No user exists with this email')
+
             const passValidated = bcrypt.compareSync(password, user.password)
             if (!passValidated) throw new Error('The email/password is incorrect')
 
@@ -30,9 +23,8 @@ const authController = {
                 user: { email, name, photo },
                 message: 'Sign in succesfully'
             })
-        }
-        catch (err) {
-            return res.status(500).json({
+        } catch (err) {
+            return res.status(400).json({
                 response: err.name,
                 success: false,
                 error: err.message,
@@ -42,22 +34,28 @@ const authController = {
     },
     signUp: async (req, res, next) => {
 
-        let el;
+        let user;
         let success = true;
         let error = null;
+        let token;
 
         try {
 
             const hashPassword = bcrypt.hashSync(req.body.password)
             req.body.password = hashPassword
-            el = await User.create(req.body)
+            user = await User.create(req.body)
+            const { email, photo } = user
+            token = jwt.sign({ email, photo }, process.env.SECRET_KEY)
         }
         catch (err) {
             success = false;
             error = err;
         }
         res.json({
-            response: el,
+            response: {
+                user,
+                token: token
+            },
             success,
             error
         })
